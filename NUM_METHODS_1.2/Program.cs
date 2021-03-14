@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Collections.Generic;
 
 namespace kanafon
 {
@@ -11,19 +13,47 @@ namespace kanafon
             {
                 for (int j = 0; j < n; j++)
                 {
-                    Console.Write(Math.Round(b[i, j], 6) + " ");
+                    Console.Write(Math.Round(b[i, j], 4) + " ");
                 }
                 Console.WriteLine();
             }
         }
 
+        static void WRITE_STEP(double[,] b, int n, StreamWriter s)
+        {
+            s.WriteLine();
+            for (int i = 0; i < n; i++)
+            {
+                for (int j = 0; j < n; j++)
+                {
+                    s.Write(Math.Round(b[i, j], 4) + " ");
+                }
+                s.WriteLine();
+            }
+        }
+
         static void Main(string[] args)
         {
-            Console.Write("Input the size of your matrix: ");
-            int k, i, j, n = Convert.ToInt32(Console.ReadLine());
+            //Console.Write("Input the size of your matrix: ");
+            //int k, i, j, n = Convert.ToInt32(Console.ReadLine());
 
-            double[,] a = new double[n, n];
+            StreamWriter sw = File.CreateText("1.txt");
+
+            string[] lines = File.ReadAllLines("TEST_MATRIX_1.txt");
+            double[,] a = new double[lines.Length, lines[0].Split(' ').Length];
+
+            for (int l = 0; l < lines.Length; l++)
+            {
+                string[] Temp = lines[l].Split(' ');
+                for (int t = 0; t < Temp.Length; t++)
+                    a[l, t] = Double.Parse(Temp[t]); 
+            }
+       
+            int k, i, j, n = lines.Length;
             double[,] b = new double[n, n];
+            /*
+            double[,] a = new double[n, n];
+            
 
             for (i = 0; i < n; i++)
             {
@@ -32,14 +62,17 @@ namespace kanafon
                     a[i, j] = Convert.ToDouble(Console.ReadLine());
                 }
             }
+            */
 
             for (i = 0; i < n; i++)
             {
                 for (j = 0; j < n; j++)
                 {
                     Console.Write(a[i, j] + " ");
+                    sw.Write(a[i, j] + " ");
                 }
                 Console.WriteLine();
+                sw.WriteLine();
             }
 
             for (i = 0; i < n; i++)
@@ -89,6 +122,8 @@ namespace kanafon
 
                 SHOW_STEP(a, n);
                 SHOW_STEP(b, n);
+                WRITE_STEP(a, n, sw);
+                WRITE_STEP(b, n, sw);
 
                 double r = 1 / a[k, k];
                 for (j = 0; j < n; j++)
@@ -99,6 +134,8 @@ namespace kanafon
 
                 SHOW_STEP(a, n);
                 SHOW_STEP(b, n);
+                WRITE_STEP(a, n, sw);
+                WRITE_STEP(b, n, sw);
 
                 for (i = k + 1; i < n; i++)
                 {
@@ -112,16 +149,21 @@ namespace kanafon
 
                 SHOW_STEP(a, n);
                 SHOW_STEP(b, n);
+                WRITE_STEP(a, n, sw);
+                WRITE_STEP(b, n, sw);
             }
 
             Console.WriteLine();
+            sw.WriteLine();
             for (i = 0; i < n; i++)
             {
                 for (j = 0; j < n; j++)
                 {
                     Console.Write(Math.Round(b[i, j], 4) + " ");
+                    sw.Write(Math.Round(b[i, j], 4) + " ");
                 }
                 Console.WriteLine();
+                sw.WriteLine();
             }
 
             double det = 1;
@@ -133,6 +175,7 @@ namespace kanafon
             if (Double.IsNaN(det))
             {
                 Console.WriteLine("Matrix wasn`t inverted!");
+                sw.WriteLine("Matrix wasn`t inverted!");
             }
 
             else
@@ -151,8 +194,12 @@ namespace kanafon
                     }
                     SHOW_STEP(a, n);
                     SHOW_STEP(b, n);
+                    WRITE_STEP(a, n, sw);
+                    WRITE_STEP(b, n, sw);
                 }
             }
+
+            sw.Close();
         }
     }
 }
